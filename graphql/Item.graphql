@@ -1,0 +1,129 @@
+type Item {
+    id: ID!
+    name: String
+    second_name: String
+    description: String!
+    item_type_id: String!
+    item_type: ItemType @belongsTo
+    internal_id: String
+    item_code: String
+    item_code_gs1: String
+    unit_type_id: String!
+    unit_type: UnitType @belongsTo
+    currency_type_id: String
+    currency_type: CurrencyType @belongsTo
+    sale_unit_price: Float
+    purchase_unit_price: Float
+    has_isc: Boolean!
+    system_isc_type_id: String
+    system_isc_type: SystemIscType @belongsTo
+    percentage_isc: Float!
+    suggested_price: Float!
+
+    sale_affectation_igv_type_id: String
+    sale_affectation_igv_type: AffectationIgvType @belongsTo
+    calculate_quantity: Boolean!
+    has_igv: Boolean
+
+    stock: Float
+    stock_min: Float
+    percentage_of_profit: Float
+
+    attributes: [String]
+    has_perception: Boolean!
+    percentage_perception: Float
+
+    image: String
+    image_medium: String
+    image_small: String
+
+    amount_plastic_bag_taxes: Float
+    date_of_due: Date
+    is_set: Boolean
+    sale_unit_price_set: Float
+
+    brand_id: String
+    brand: Brand @belongsTo
+    category_id: String
+    category: Category @belongsTo
+    active: Boolean
+    has_plastic_bag_taxes: String
+    barcode: String
+    item_unit_types: [ItemUnitType!]! @hasMany
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+type ItemWarehouse {
+    id: ID
+    item_id: String
+    warehouse_id: String
+    warehouse: Warehouse @belongsTo
+    stock: Float
+}
+type Warehouse {
+    establishment_id: String
+    description: String
+}
+input CreateItem {
+    id: ID
+    name: String
+    second_name: String
+    description: String!
+    item_type_id: String!
+    internal_id: String
+    item_code: String
+    item_code_gs1: String
+    unit_type_id: String!
+    currency_type_id: String
+    sale_unit_price: Float
+    purchase_unit_price: Float
+    has_isc: Boolean!
+    system_isc_type_id: String
+    percentage_isc: Float!
+    suggested_price: Float!
+
+    sale_affectation_igv_type_id: String
+    calculate_quantity: Boolean!
+    has_igv: Boolean
+
+    stock: Float
+    stock_min: Float
+    percentage_of_profit: Float
+
+    attributes: [String]
+    has_perception: Boolean!
+    percentage_perception: Float
+
+    image: String
+    image_medium: String
+    image_small: String
+
+    amount_plastic_bag_taxes: Float
+    date_of_due: Date
+    is_set: Boolean
+    sale_unit_price_set: Float
+
+    brand_id: String
+    category_id: String
+    active: Boolean
+    has_plastic_bag_taxes: Boolean
+    barcode: String
+}
+input inputProducVariantValues {
+    attribute_id: String
+    values: [String]
+}
+extend type Query {
+    Items(where: _ @whereConditions(columns: ["description"]),
+        orderBy: _ @orderBy(columns: ["id","description","currency_type_id","sale_unit_price","has_igv","created_at"])): [Item!]! @paginate
+
+    Item(id: String @eq): Item @find
+}
+
+type message_upload {
+    file_url: String!
+}
+extend type Mutation {
+    upload(file: Upload!): message_upload @field(resolver: "GenesysLite\\GenesysInventory\\Graphql\\Mutations\\Upload") @guard
+    updateOrCreateItem(input: CreateItem! @spread): Item @field(resolver: "GenesysLite\\GenesysInventory\\Graphql\\Mutations\\UpsertItem") @guard
+}

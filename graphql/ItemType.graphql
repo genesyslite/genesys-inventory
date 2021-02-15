@@ -1,0 +1,12 @@
+type ItemType {
+    id: ID!
+    description: String!
+}
+
+extend type Query {
+    ItemTypesAll: [ItemType!]! @all
+    ItemTypes(where: _ @whereConditions(columns: ["description"]), orderBy:
+    _ @orderBy(columns: ["description"])): [ItemType!]! @paginate(defaultCount: 10) @guard
+
+    ItemType(id: ID @eq): ItemType @find
+}

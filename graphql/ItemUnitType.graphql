@@ -1,0 +1,26 @@
+type ItemUnitType {
+    id: ID!
+    description: String!
+    quantity_unit: String!
+    price1: String!
+    price2: String!
+    price3  : String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+
+input CreateItemUnitType {
+    id: ID
+    name: String!
+}
+
+extend type Query {
+    ItemUnitTypesAll: [ItemUnitType!]! @all
+    ItemUnitTypes(where: _ @whereConditions(columns: ["name"]),
+        orderBy: _ @orderBy(columns: ["id","name","created_at"])): [ItemUnitType!]! @paginate
+    ItemUnitType(id: String @eq): ItemUnitType @find
+}
+extend type Mutation {
+    updateOrCreateItemUnitType(input: CreateItemUnitType! @spread): ItemUnitType @upsert
+}

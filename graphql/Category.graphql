@@ -1,0 +1,23 @@
+type Category {
+    id: ID!
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+
+input CreateCategory {
+    id: ID
+    name: String!
+}
+
+extend type Query {
+
+    CategoriesAll: [Category!]! @all
+    Categories(where: _ @whereConditions(columns: ["name"]), orderBy: _ @orderBy(columns: ["id","name","created_at"])): [Category!]! @paginate
+
+    Category(id: ID @eq): Category @find
+}
+extend type Mutation {
+    updateOrCreateCategory(input: CreateCategory! @spread): Category @upsert
+}

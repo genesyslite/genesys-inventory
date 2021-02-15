@@ -1,0 +1,22 @@
+type Brand {
+    id: ID!
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+
+input CreateBrand {
+    id: ID
+    name: String!
+}
+
+extend type Query {
+    BrandsAll: [Brand!]! @all
+    Brands(where: _ @whereConditions(columns: ["name"]),
+        orderBy: _ @orderBy(columns: ["id","name","created_at"])): [Brand!]! @paginate
+    Brand(id: String @eq): Brand @find
+}
+extend type Mutation {
+    updateOrCreateBrand(input: CreateBrand! @spread): Brand @upsert
+}

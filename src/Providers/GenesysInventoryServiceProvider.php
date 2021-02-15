@@ -17,6 +17,9 @@ class GenesysInventoryServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/genesysInventory.php',
             'genesysFact'
         );
+        $this->publishes([
+            __DIR__.'/../../graphql' => base_path('/graphql/GenesysInventory'),
+        ], 'genesys-inventory-schema');
     }
 
     /**
